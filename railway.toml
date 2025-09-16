@@ -1,12 +1,7 @@
-name: trade-bridge-service
-services:
-  - name: trade-bridge
-    build:
-      dockerfile: Dockerfile.trade-bridge
-    env:
-      SUPABASE_URL: https://ifmqpzgqrmhhzrvfrurp.supabase.co
-      SUPABASE_SERVICE_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlmbXFwemdxcm1oaHpydmZydXJwIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1Nzc5NzQ2MCwiZXhwIjoyMDczMzczNDYwfQ.HRwpPjZcfuGre14KQPfn2UelMuXS7Z0hPZ4cCF4dzcg
-      PORT: 8080
-      NODE_ENV: production
-    ports:
-      - 8080
+# Railway Configuration for Trade Bridge Service
+[build]
+dockerfile = "Dockerfile.trade-bridge"
+
+[deploy]
+healthcheckPath = "/health"
+restartPolicyType = "on_failure"

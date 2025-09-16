@@ -78,7 +78,19 @@ export class TradeBridgeService {
     this.supabase = createTradeClient();
     
     // Create HTTP server and WebSocket server
-    const server = createServer();
+    const server = createServer((req, res) => {
+      // Add health check endpoint for Railway
+      if (req.url === '/health') {
+        res.writeHead(200, { 'Content-Type': 'text/plain' });
+        res.end('OK');
+        return;
+      }
+      
+      // Default response for other endpoints
+      res.writeHead(404, { 'Content-Type': 'text/plain' });
+      res.end('Not Found');
+    });
+    
     this.wss = new WebSocketServer({ server });
     
     // Start server
