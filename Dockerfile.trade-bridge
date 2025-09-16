@@ -1,16 +1,26 @@
-# Simplified Trade Bridge Dockerfile for Railway
-FROM node:18-alpine
+# Railway Trade Bridge Service Dockerfile
+# This builds ONLY the trade bridge WebSocket service, NOT the Next.js app
+FROM node:20-alpine
 
 WORKDIR /app
+
+# Install curl for health checks
+RUN apk add --no-cache curl
 
 # Copy package files
 COPY package.json package-lock.json ./
 
-# Install all dependencies (including dev dependencies for ts-node)
+# Install ALL dependencies (including dev deps for ts-node)
 RUN npm ci
 
-# Copy source code
-COPY . .
+# Copy ONLY the files needed for trade bridge
+COPY src/services/trading/ ./src/services/trading/
+COPY src/lib/supabase/ ./src/lib/supabase/
+COPY src/types/ ./src/types/
+COPY tsconfig.json ./
+
+# Create a simple health check endpoint script
+RUN echo 'const http = require("http"); const server = http.createServer((req, res) => { if (req.url === "/health") { res.writeHead(200); res.end("OK"); } else { res.writeHead(404); res.end("Not Found"); } }); const port = process.env.PORT || 8080; server.listen(port, () => console.log(`Health check server on port ${port}`));' > health.js
 
 # Expose port
 EXPOSE 8080
@@ -19,5 +29,5 @@ EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
   CMD curl -f http://localhost:8080/health || exit 1
 
-# Start the trade bridge service directly with ts-node
+# Start the trade bridge service directly
 CMD ["npx", "ts-node", "src/services/trading/trade-bridge.ts"]

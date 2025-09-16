@@ -1,0 +1,24 @@
+# Railway ignore file - only deploy trade bridge service
+.next/
+.vercel/
+node_modules/
+*.log
+.env*
+!.env.example
+
+# Ignore Next.js specific files for trade bridge deployment  
+pages/
+public/
+styles/
+.eslintrc.js
+next.config.ts
+tailwind.config.ts
+postcss.config.mjs
+
+# Keep only trade bridge related files
+!src/services/trading/
+!src/lib/supabase/
+!src/types/
+!package.json
+!package-lock.json
+!Dockerfile.trade-bridge
