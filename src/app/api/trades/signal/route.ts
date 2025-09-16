@@ -73,7 +73,7 @@ export async function POST(request: Request) {
   }
 }
 
-async function handleTradeOpened(supabase: any, account: any, trade: any) {
+async function handleTradeOpened(tradeData: unknown, account: unknown, supabase: unknown) {
   try {
     // Insert trade into database
     const { data: newTrade, error } = await supabase
@@ -121,7 +121,7 @@ async function handleTradeOpened(supabase: any, account: any, trade: any) {
   }
 }
 
-async function handleTradeClosed(supabase: any, account: any, trade: any) {
+async function handleTradeClosed(tradeData: unknown, account: unknown, supabase: unknown) {
   try {
     // Update trade in database
     const { data: updatedTrade, error } = await supabase
@@ -160,7 +160,7 @@ async function handleTradeClosed(supabase: any, account: any, trade: any) {
   }
 }
 
-async function handleTradeModified(supabase: any, account: any, trade: any) {
+async function handleTradeModified(tradeData: unknown, account: unknown, supabase: unknown) {
   try {
     // Update trade SL/TP
     const { error } = await supabase
@@ -219,7 +219,7 @@ async function handleHeartbeat(supabase: any, account: any) {
   }
 }
 
-async function processCopyMappings(supabase: any, masterTrade: any) {
+async function processCopyMappings(masterTrade: unknown, supabase: unknown) {
   try {
     // Get all active copy mappings for this master account
     const { data: mappings } = await supabase
