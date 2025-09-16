@@ -2,18 +2,14 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   eslint: {
-    // Disable ESLint during build for deployment
+    // Disable ESLint during builds for faster deployment
     ignoreDuringBuilds: true,
   },
   typescript: {
-    // Allow deployment with TypeScript warnings
+    // Disable type checking during builds for faster deployment  
     ignoreBuildErrors: true,
   },
-  env: {
-    BRIDGE_SERVICE_URL: process.env.BRIDGE_SERVICE_URL || 'ws://localhost:3001'
-  },
-  // Ensure API routes are not statically analyzed during build
-  output: 'standalone'
+  output: 'standalone',
 };
 
 export default nextConfig;

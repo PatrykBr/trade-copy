@@ -1,5 +1,5 @@
 # Production Dockerfile for Next.js App
-FROM node:20-alpine AS base
+FROM node:18-alpine AS base
 
 # Install dependencies only when needed
 FROM base AS deps
@@ -26,7 +26,7 @@ COPY . .
 # Uncomment the following line in case you want to disable telemetry during the build.
 ENV NEXT_TELEMETRY_DISABLED 1
 
-# Build with Turbopack and ignore lint errors
+# Build with Turbopack
 RUN npm run build
 
 # Production image, copy all the files and run next

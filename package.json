@@ -7,7 +7,8 @@
     "build": "next build --turbopack",
     "start": "next start",
     "lint": "eslint",
-    "start:bridge": "node bridge-service.js"
+    "trade-bridge": "ts-node src/services/trading/trade-bridge.ts",
+    "trade-bridge:dev": "tsx watch src/services/trading/trade-bridge.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
@@ -39,6 +40,8 @@
     "eslint-config-next": "15.5.3",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.13",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.16.2",
     "typescript": "^5"
   }
 }
