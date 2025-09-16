@@ -11,7 +11,9 @@ const nextConfig: NextConfig = {
   },
   env: {
     BRIDGE_SERVICE_URL: process.env.BRIDGE_SERVICE_URL || 'ws://localhost:3001'
-  }
+  },
+  // Ensure API routes are not statically analyzed during build
+  output: 'standalone'
 };
 
 export default nextConfig;

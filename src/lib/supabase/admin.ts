@@ -6,8 +6,8 @@ if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
 }
 
 export const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY || 'missing-service-role-key',
+  process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co',
+  process.env.SUPABASE_SERVICE_ROLE_KEY || 'placeholder-service-role-key',
   {
     auth: {
       autoRefreshToken: false,
