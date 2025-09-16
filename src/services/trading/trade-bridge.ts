@@ -2,8 +2,13 @@ import WebSocket, { WebSocketServer } from 'ws';
 import { createServer } from 'http';
 import { IncomingMessage } from 'http';
 import Redis from 'ioredis';
-import { createClient } from '@/lib/supabase/server';
+import { createTradeClient } from '@/lib/supabase/trade-client';
 import type { TradingAccount, Trade, CopyMapping } from '@/types';
+
+// Load environment variables
+import { config } from 'dotenv';
+config({ path: '.env.local' });
+config({ path: '.env.trade-bridge' });
 
 interface EAConnection {
   id: string;
@@ -70,7 +75,7 @@ export class TradeBridgeService {
     this.redis = new Redis(process.env.REDIS_URL || 'redis://localhost:6379');
     
     // Initialize Supabase client
-    this.supabase = createClient();
+    this.supabase = createTradeClient();
     
     // Create HTTP server and WebSocket server
     const server = createServer();
