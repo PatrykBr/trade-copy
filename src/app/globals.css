@@ -1,0 +1,48 @@
+@import "tailwindcss";
+
+/* Theme variables */
+:root { --tc-radius:10px; }
+
+body { background:radial-gradient(circle at 20% 15%, hsl(215 30% 18%), hsl(220 25% 10%) 55%, hsl(220 30% 6%)); color:hsl(210 30% 96%); }
+p { color: hsl(215 15% 72%); }
+
+/* Subtle layered gradient utility classes */
+.layer-fade-top { position:relative; }
+.layer-fade-top:before { content:""; position:absolute; inset:0; background:linear-gradient(to bottom,rgba(15,23,42,0.6),transparent 55%); pointer-events:none; }
+.layer-fade-dual { position:relative; }
+.layer-fade-dual:before { content:""; position:absolute; inset:0; background:radial-gradient(circle at 20% 25%, rgba(56,189,248,0.12), transparent 60%), radial-gradient(circle at 80% 70%, rgba(14,165,233,0.10), transparent 65%); pointer-events:none; }
+.layer-grid-soft { background-image:linear-gradient(to right,rgba(255,255,255,0.04) 1px,transparent 1px),linear-gradient(to bottom,rgba(255,255,255,0.04) 1px,transparent 1px); background-size:42px 42px; mask:linear-gradient(to bottom,rgba(0,0,0,0.7),rgba(0,0,0,0)); }
+
+/* Accent copy highlight */
+.copy-accent { background:linear-gradient(90deg,hsl(190 95% 65%),hsl(200 92% 58%),hsl(210 90% 60%)); -webkit-background-clip:text; background-clip:text; color:transparent; font-weight:600; }
+
+/* Custom non-utility classes kept minimal to avoid relying on @apply in global CSS */
+.bg-grid { background-image: linear-gradient(to right, rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.04) 1px, transparent 1px); background-size:40px 40px; }
+.mesh-gradient { background:radial-gradient(at 20% 20%, rgba(56,189,248,.25), transparent 60%), radial-gradient(at 80% 30%, rgba(14,165,233,.25), transparent 60%), radial-gradient(at 50% 80%, rgba(59,130,246,.25), transparent 60%); }
+@keyframes shimmer { from { background-position:0% 50%; } to { background-position:100% 50%; } }
+.animate-shimmer { background:linear-gradient(110deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.15) 25%, rgba(255,255,255,0.05) 50%); background-size:200% 100%; animation:shimmer 2.5s linear infinite; }
+@keyframes fade-up { 0% { opacity:0; transform:translateY(12px);} 100% { opacity:1; transform:translateY(0);} }
+.fade-up { animation:fade-up .7s cubic-bezier(.16,.84,.44,1) both; }
+
+/* Layout container (replaces earlier tailwind @apply usage) */
+.container-page { width:100%; max-width:1280px; margin-left:auto; margin-right:auto; padding-left:1rem; padding-right:1rem; }
+@media (min-width:640px){ .container-page { padding-left:1.5rem; padding-right:1.5rem; } }
+@media (min-width:1024px){ .container-page { padding-left:2rem; padding-right:2rem; } }
+
+html, body { overflow-x:hidden; }
+
+/* Marquee animation for platform ticker */
+@keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+.animate-marquee { animation: marquee 28s linear infinite; }
+.marquee-fade { position:relative; }
+.marquee-fade:before, .marquee-fade:after { content:""; position:absolute; top:0; width:80px; height:100%; pointer-events:none; z-index:10; }
+.marquee-fade:before { left:0; background:linear-gradient(to right, rgba(10,10,10,1), rgba(10,10,10,0)); }
+.marquee-fade:after { right:0; background:linear-gradient(to left, rgba(10,10,10,1), rgba(10,10,10,0)); }
+
+/* Reduced motion respect (future hook) */
+@media (prefers-reduced-motion: reduce) {
+	.animate-marquee { animation-duration: 60s; }
+}
+
+/* Perspective helper for tilt groups */
+.tilt-group { perspective: 1600px; }
