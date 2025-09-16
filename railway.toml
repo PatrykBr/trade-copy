@@ -1,0 +1,16 @@
+[build]
+builder = "nixpacks"
+
+[deploy]
+startCommand = "npm run start:bridge"
+healthcheckPath = "/health"
+healthcheckTimeout = 300
+restartPolicyType = "on_failure"
+
+[variables]
+NODE_ENV = "production"
+PORT = "3001"
+
+[env]
+SUPABASE_URL = { description = "Your Supabase project URL" }
+SUPABASE_SERVICE_ROLE_KEY = { description = "Your Supabase service role key" }

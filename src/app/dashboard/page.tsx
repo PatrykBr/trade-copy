@@ -6,6 +6,8 @@ import { useAuth } from '@/contexts/auth-context';
 import { PerformanceOverview } from '@/components/analytics/performance-overview';
 import { TradeHistory } from '@/components/analytics/trade-history';
 import { SubscriptionCard } from '@/components/subscription/subscription-card';
+import { TradingDashboard } from '@/components/trading/trading-dashboard';
+import { CopyMappingStatus } from '@/components/trading/copy-mapping-status';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Activity, Zap, ShieldCheck, Plus, Layers, BarChart3 } from 'lucide-react';
@@ -112,6 +114,7 @@ function DashboardInner() {
 
       <div className="grid lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
+          <TradingDashboard />
           <Card variant="outline">
             <CardHeader className="pb-3">
               <CardTitle className="text-sm font-medium">Performance</CardTitle>
@@ -132,6 +135,7 @@ function DashboardInner() {
           </Card>
         </div>
         <div className="space-y-6">
+          <CopyMappingStatus />
           <RecentActivity />
           <Card variant="outline">
             <CardHeader className="pb-3">

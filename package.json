@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "start:bridge": "node bridge-service.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
@@ -14,15 +15,17 @@
     "@supabase/ssr": "^0.7.0",
     "@supabase/supabase-js": "^2.57.4",
     "@tailwindcss/postcss": "^4.1.13",
-    "lucide-react": "^0.469.0",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
+    "ioredis": "^5.7.0",
+    "lucide-react": "^0.469.0",
     "next": "15.5.3",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-hook-form": "^7.62.0",
     "stripe": "^18.5.0",
     "tailwind-merge": "^2.5.2",
+    "ws": "^8.18.3",
     "zod": "^4.1.8"
   },
   "devDependencies": {
@@ -30,6 +33,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/ws": "^8.18.1",
     "autoprefixer": "^10.4.20",
     "eslint": "^9",
     "eslint-config-next": "15.5.3",
