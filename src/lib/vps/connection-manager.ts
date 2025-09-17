@@ -42,7 +42,7 @@ export class VPSConnectionManager {
         .from('vps_instances')
         .select('*')
         .eq('status', 'active')
-        .order('cpu_usage', { ascending: true })
+        .order('current_load', { ascending: true })
         .limit(1)
         .single();
 
@@ -51,15 +51,8 @@ export class VPSConnectionManager {
         return null;
       }
 
-      // Check capacity (max accounts per VPS)
-      const maxAccounts = availableVPS.max_accounts || 10;
-      const { count } = await supabase
-        .from('account_vps_assignments')
-        .select('*', { count: 'exact', head: true })
-        .eq('vps_id', availableVPS.id)
-        .eq('status', 'connected');
-
-      if ((count || 0) >= maxAccounts) {
+      // Check capacity
+      if ((availableVPS.current_load || 0) >= (availableVPS.capacity || 100)) {
         console.error('No VPS with available capacity');
         return null;
       }
@@ -199,11 +192,7 @@ export class VPSConnectionManager {
   ): Promise<boolean> {
     try {
       // VPS connection configuration
-      const vpsConfig: VPSConnectionConfig = {
-        host: vps.ip_address,
-        port: 22, // Default SSH port
-        monitoring_port: 8080
-      };
+      const vpsConfig = vps.connection_config as VPSConnectionConfig;
       
       // Simulate MT4/MT5 connection process
       // In production, this would:
@@ -213,7 +202,7 @@ export class VPSConnectionManager {
       // 4. Enable auto-trading and DLL imports
       // 5. Load monitoring EA
       
-      console.log(`Connecting ${platform.code.toUpperCase()} account ${account.account_number} on VPS ${vps.ip_address}`);
+      console.log(`Connecting ${platform.code.toUpperCase()} account ${account.account_number} on VPS ${vps.host}`);
       
       // Mock connection delay
       await new Promise(resolve => setTimeout(resolve, 2000));
@@ -246,7 +235,7 @@ export class VPSConnectionManager {
     platform: any
   ): Promise<boolean> {
     try {
-      console.log(`Connecting cTrader account ${account.account_number} on VPS ${vps.ip_address}`);
+      console.log(`Connecting cTrader account ${account.account_number} on VPS ${vps.host}`);
       
       // Mock connection
       await new Promise(resolve => setTimeout(resolve, 1500));
@@ -324,7 +313,7 @@ export class VPSConnectionManager {
         cpu_usage: Math.random() * 100,
         memory_usage: Math.random() * 100,
         disk_usage: Math.random() * 100,
-        connection_count: 0, // Will be calculated from database
+        connection_count: vps.current_load || 0,
         last_response_time: Date.now() - startTime,
         status: 'healthy'
       };

@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Cancel at period end
-    await stripe().subscriptions.update(subscriptionId, {
+    await stripe.subscriptions.update(subscriptionId, {
       cancel_at_period_end: true,
     });
 

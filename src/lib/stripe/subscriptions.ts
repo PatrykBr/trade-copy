@@ -101,7 +101,7 @@ export async function updateStatus(stripeSubscriptionId: string, status: 'active
 
 /** Fetch stripe customer and derive userId */
 export async function getUserIdFromCustomer(customerId: string): Promise<string> {
-  const customer = await stripe().customers.retrieve(customerId);
+  const customer = await stripe.customers.retrieve(customerId);
   if (customer.deleted) throw new Error('Customer deleted');
   const userId = customer.metadata.userId;
   if (!userId) throw new Error('Missing userId in customer metadata');

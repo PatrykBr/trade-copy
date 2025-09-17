@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
     let customerId = user.stripe_customer_id;
     
     if (!customerId) {
-      const customer = await stripe().customers.create({
+      const customer = await stripe.customers.create({
         email: user.email,
         name: user.full_name || undefined,
         metadata: {
@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create Stripe checkout session
-    const session = await stripe().checkout.sessions.create({
+    const session = await stripe.checkout.sessions.create({
       customer: customerId,
       payment_method_types: ['card'],
       billing_address_collection: 'required',

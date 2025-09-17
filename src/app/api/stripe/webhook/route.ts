@@ -11,8 +11,7 @@ export async function POST(request: NextRequest) {
   let event: Stripe.Event;
 
   try {
-    const stripeClient = stripe();
-    event = stripeClient.webhooks.constructEvent(
+    event = stripe.webhooks.constructEvent(
       body,
       signature,
       process.env.STRIPE_WEBHOOK_SECRET!
@@ -50,7 +49,7 @@ export async function POST(request: NextRequest) {
         const session = event.data.object as Stripe.Checkout.Session;
         // Expand subscription to ensure we have latest
         if (session.subscription) {
-          const subscription = await stripe().subscriptions.retrieve(session.subscription as string);
+          const subscription = await stripe.subscriptions.retrieve(session.subscription as string);
           try {
             const userId = await getUserIdFromCustomer(subscription.customer as string);
             await syncSubscription(subscription, userId);
