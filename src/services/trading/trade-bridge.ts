@@ -59,50 +59,27 @@ interface CopyInstruction {
 }
 
 export class TradeBridgeService {
-  private wss!: WebSocketServer;
+  private wss: WebSocketServer;
   private connections = new Map<string, EAConnection>();
   private redis: Redis;
   private supabase: any;
   private heartbeatInterval?: NodeJS.Timeout;
-  private server: any;
   
-  constructor() {
+  constructor(port: number = 8080) {
     // Initialize Redis for message queuing and caching
     this.redis = new Redis(process.env.REDIS_URL || 'redis://localhost:6379');
     
     // Initialize Supabase client
     this.supabase = createClient();
-  }
-
-  async start(port: number = parseInt(process.env.PORT || '8080')): Promise<void> {
-    // Create HTTP server and WebSocket server
-    this.server = createServer();
-    this.wss = new WebSocketServer({ server: this.server });
     
-    // Add health check endpoint for Railway
-    this.server.on('request', (req: any, res: any) => {
-      if (req.url === '/health') {
-        res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({
-          status: 'healthy',
-          timestamp: new Date().toISOString(),
-          connections: this.connections.size,
-          uptime: process.uptime(),
-          redis_connected: this.redis.status === 'ready'
-        }));
-        return;
-      }
-      
-      // Handle other HTTP requests
-      res.writeHead(404, { 'Content-Type': 'text/plain' });
-      res.end('Not Found');
-    });
+    // Create HTTP server and WebSocket server
+    const server = createServer();
+    this.wss = new WebSocketServer({ server });
     
     // Start server
-    this.server.listen(port, '0.0.0.0', () => {
+    server.listen(port, () => {
       console.log(`🚀 Trade Bridge Service running on port ${port}`);
-      console.log(`📡 WebSocket endpoint: ws://0.0.0.0:${port}`);
-      console.log(`❤️  Health check: http://0.0.0.0:${port}/health`);
+      console.log(`📡 WebSocket endpoint: ws://localhost:${port}`);
     });
     
     this.setupWebSocketHandlers();
@@ -664,14 +641,7 @@ export class TradeBridgeService {
     }
     
     // Close WebSocket server
-    if (this.wss) {
-      this.wss.close();
-    }
-
-    // Close HTTP server
-    if (this.server) {
-      this.server.close();
-    }
+    this.wss.close();
     
     // Close Redis connection
     await this.redis.disconnect();
@@ -682,18 +652,6 @@ export class TradeBridgeService {
 
 // Export singleton instance
 export const tradeBridge = new TradeBridgeService();
-
-// Start the service
-if (require.main === module) {
-  tradeBridge.start()
-    .then(() => {
-      console.log('✅ Trade Bridge Service started successfully');
-    })
-    .catch((error) => {
-      console.error('❌ Failed to start Trade Bridge Service:', error);
-      process.exit(1);
-    });
-}
 
 // Handle graceful shutdown
 process.on('SIGTERM', () => tradeBridge.shutdown());
