@@ -73,7 +73,23 @@ export class TradeBridgeService {
     this.supabase = createClient();
     
     // Create HTTP server and WebSocket server
-    const server = createServer();
+    const server = createServer((req, res) => {
+      // Health check endpoint for Railway
+      if (req.url === '/health') {
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ 
+          status: 'healthy',
+          timestamp: new Date().toISOString(),
+          connections: this.connections.size
+        }));
+        return;
+      }
+      
+      // Default response for other HTTP requests
+      res.writeHead(200, { 'Content-Type': 'text/plain' });
+      res.end('TradeCopy Pro - Trade Bridge Service');
+    });
+    
     this.wss = new WebSocketServer({ server });
     
     // Start server
@@ -650,8 +666,9 @@ export class TradeBridgeService {
   }
 }
 
-// Export singleton instance
-export const tradeBridge = new TradeBridgeService();
+// Export singleton instance and start service
+const port = parseInt(process.env.PORT || '8080', 10);
+export const tradeBridge = new TradeBridgeService(port);
 
 // Handle graceful shutdown
 process.on('SIGTERM', () => tradeBridge.shutdown());
