@@ -4,13 +4,68 @@ export type Json =
   | boolean
   | null
   | { [key: string]: Json | undefined }
-  // AUTO-GENERATED FILE - DO NOT EDIT DIRECTLY.
-  // Regenerated after applying migrations 006-008 (billing infra, enum, plans, audit, RLS)
+  | Json[]
 
-  export type Database = {
-    public: {
-      Tables: {
-        analytics_snapshots: {
+export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: "13.0.5"
+  }
+  public: {
+    Tables: {
+      account_vps_assignments: {
+        Row: {
+          account_id: string | null
+          assigned_at: string | null
+          connection_established_at: string | null
+          error_count: number | null
+          error_message: string | null
+          id: string
+          last_ping: string | null
+          status: string | null
+          vps_id: string | null
+        }
+        Insert: {
+          account_id?: string | null
+          assigned_at?: string | null
+          connection_established_at?: string | null
+          error_count?: number | null
+          error_message?: string | null
+          id?: string
+          last_ping?: string | null
+          status?: string | null
+          vps_id?: string | null
+        }
+        Update: {
+          account_id?: string | null
+          assigned_at?: string | null
+          connection_established_at?: string | null
+          error_count?: number | null
+          error_message?: string | null
+          id?: string
+          last_ping?: string | null
+          status?: string | null
+          vps_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "account_vps_assignments_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: true
+            referencedRelation: "trading_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "account_vps_assignments_vps_id_fkey"
+            columns: ["vps_id"]
+            isOneToOne: false
+            referencedRelation: "vps_instances"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      analytics_snapshots: {
           Row: {
             account_id: string
             balance: number

@@ -1,0 +1,14 @@
+.env.local
+.env.example
+node_modules
+.next
+.git
+*.log
+docs/
+README.md
+SETUP_GUIDE.md
+RAILWAY_SETUP_GUIDE.md
+IMPLEMENTATION_SUMMARY.md
+.vscode/
+coverage/
+tests/
