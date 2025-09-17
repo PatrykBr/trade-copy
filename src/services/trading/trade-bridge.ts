@@ -61,13 +61,25 @@ interface CopyInstruction {
 export class TradeBridgeService {
   private wss: WebSocketServer;
   private connections = new Map<string, EAConnection>();
-  private redis: Redis;
+  private redis?: Redis;
   private supabase: any;
   private heartbeatInterval?: NodeJS.Timeout;
   
   constructor(port: number = 8080) {
-    // Initialize Redis for message queuing and caching
-    this.redis = new Redis(process.env.REDIS_URL || 'redis://localhost:6379');
+    // Initialize Redis for message queuing and caching (optional)
+    if (process.env.REDIS_URL) {
+      this.redis = new Redis(process.env.REDIS_URL, {
+        maxRetriesPerRequest: 3,
+        lazyConnect: true
+      });
+      
+      this.redis.on('error', (err) => {
+        console.warn('⚠️ Redis connection error:', err.message);
+        console.log('🔄 Service will continue without Redis...');
+      });
+    } else {
+      console.log('ℹ️ No REDIS_URL found, running without Redis');
+    }
     
     // Initialize Supabase client
     this.supabase = createClient();
@@ -313,11 +325,13 @@ export class TradeBridgeService {
       });
 
       // Publish to Redis for real-time updates
-      await this.redis.publish('trade_updates', JSON.stringify({
-        type: 'trade_opened',
-        accountId: connection.accountId,
-        trade: trade
-      }));
+      if (this.redis) {
+        await this.redis.publish('trade_updates', JSON.stringify({
+          type: 'trade_opened',
+          accountId: connection.accountId,
+          trade: trade
+        }));
+      }
 
     } catch (error) {
       console.error('❌ Error handling trade opened:', error);
@@ -440,12 +454,16 @@ export class TradeBridgeService {
       });
     } else {
       // Queue instruction in Redis for when account comes online
-      await this.redis.lpush(
-        `copy_queue:${instruction.targetAccountId}`,
-        JSON.stringify(instruction)
-      );
-      
-      console.log(`📬 Queued copy instruction for offline account: ${instruction.targetAccountId}`);
+      if (this.redis) {
+        await this.redis.lpush(
+          `copy_queue:${instruction.targetAccountId}`,
+          JSON.stringify(instruction)
+        );
+        
+        console.log(`📬 Queued copy instruction for offline account: ${instruction.targetAccountId}`);
+      } else {
+        console.warn(`⚠️ Cannot queue instruction - Redis not available and account ${instruction.targetAccountId} is offline`);
+      }
     }
   }
 
@@ -480,11 +498,13 @@ export class TradeBridgeService {
         });
 
         // Publish to Redis
-        await this.redis.publish('trade_updates', JSON.stringify({
-          type: 'trade_closed',
-          accountId: connection.accountId,
-          trade: trade
-        }));
+        if (this.redis) {
+          await this.redis.publish('trade_updates', JSON.stringify({
+            type: 'trade_closed',
+            accountId: connection.accountId,
+            trade: trade
+          }));
+        }
       }
 
     } catch (error) {
@@ -660,7 +680,9 @@ export class TradeBridgeService {
     this.wss.close();
     
     // Close Redis connection
-    await this.redis.disconnect();
+    if (this.redis) {
+      await this.redis.disconnect();
+    }
     
     console.log('✅ Trade Bridge Service stopped');
   }
