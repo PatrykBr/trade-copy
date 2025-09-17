@@ -2,7 +2,7 @@ import WebSocket, { WebSocketServer } from 'ws';
 import { createServer } from 'http';
 import { IncomingMessage } from 'http';
 import Redis from 'ioredis';
-import { createClient } from '@/lib/supabase/server';
+import { createClient } from '@/lib/supabase/service';
 import type { TradingAccount, Trade, CopyMapping } from '@/types';
 
 interface EAConnection {
