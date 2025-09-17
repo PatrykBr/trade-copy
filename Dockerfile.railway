@@ -1,0 +1,29 @@
+FROM node:18-alpine
+
+# Install curl for health checks
+RUN apk add --no-cache curl
+
+WORKDIR /app
+
+# Copy package files for Railway
+COPY package-railway.json ./package.json
+
+# Install dependencies
+RUN npm ci
+
+# Copy standalone trade bridge
+COPY trade-bridge-standalone.ts ./trade-bridge.ts
+
+# Install TypeScript globally and compile
+RUN npm install -g typescript @types/node @types/ws
+RUN tsc trade-bridge.ts --target es2020 --module commonjs --esModuleInterop --allowSyntheticDefaultImports --skipLibCheck
+
+# Expose port
+EXPOSE 8080
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+  CMD curl -f http://localhost:8080/health || exit 1
+
+# Start the service
+CMD ["node", "trade-bridge.js"]

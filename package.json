@@ -6,9 +6,7 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint": "eslint",
-    "trade-bridge": "ts-node src/services/trading/trade-bridge.ts",
-    "trade-bridge:dev": "tsx watch src/services/trading/trade-bridge.ts"
+    "lint": "eslint"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
@@ -18,7 +16,6 @@
     "@tailwindcss/postcss": "^4.1.13",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
-    "dotenv": "^17.2.2",
     "ioredis": "^5.7.0",
     "lucide-react": "^0.469.0",
     "next": "15.5.3",
@@ -41,8 +38,6 @@
     "eslint-config-next": "15.5.3",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.13",
-    "ts-node": "^10.9.2",
-    "tsx": "^4.16.2",
     "typescript": "^5"
   }
 }
