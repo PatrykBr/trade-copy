@@ -112,7 +112,9 @@ export class TradeBridgeService {
     
     this.setupWebSocketHandlers();
     this.startHeartbeatMonitoring();
-    this.setupRedisSubscriptions();
+    if (this.redis) {
+      this.setupRedisSubscriptions();
+    }
   }
 
   private setupWebSocketHandlers() {
@@ -573,7 +575,13 @@ export class TradeBridgeService {
   }
 
   private setupRedisSubscriptions() {
-    const subscriber = new Redis(process.env.REDIS_URL || 'redis://localhost:6379');
+    if (!this.redis) {
+      console.log('ℹ️ Skipping Redis subscriptions - Redis not available');
+      return;
+    }
+    
+    // Use existing Redis instance for subscriptions
+    const subscriber = this.redis.duplicate();
     
     // Subscribe to trade updates for real-time dashboard
     subscriber.subscribe('trade_updates');
