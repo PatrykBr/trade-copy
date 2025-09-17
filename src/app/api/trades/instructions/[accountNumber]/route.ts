@@ -4,11 +4,11 @@ import { createClient } from '@/lib/supabase/server';
 // Get copy instructions for a specific account
 export async function GET(
   request: Request,
-  { params }: { params: { accountNumber: string } }
+  { params }: { params: Promise<{ accountNumber: string }> }
 ) {
   try {
     const supabase = await createClient();
-    const { accountNumber } = params;
+    const { accountNumber } = await params;
     
     // Get URL parameters
     const url = new URL(request.url);
@@ -84,11 +84,11 @@ export async function GET(
 // Report execution result from slave account
 export async function POST(
   request: Request,
-  { params }: { params: { accountNumber: string } }
+  { params }: { params: Promise<{ accountNumber: string }> }
 ) {
   try {
     const supabase = await createClient();
-    const { accountNumber } = params;
+    const { accountNumber } = await params;
     const body = await request.json();
     
     const { 

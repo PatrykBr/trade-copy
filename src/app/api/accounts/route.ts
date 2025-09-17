@@ -29,7 +29,10 @@ export async function POST(request: Request) {
 
   const body = await request.json().catch(() => null);
   if (!body) return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
-  let { platform_id, platform_code, account_name, account_number, account_type, currency = 'USD', server } = body;
+  
+  const { account_name, account_number, account_type, currency = 'USD', server } = body;
+  let { platform_id } = body;
+  const { platform_code } = body;
   if ((!platform_id && !platform_code) || !account_name || !account_number || !account_type) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
   }

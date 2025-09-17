@@ -62,7 +62,7 @@ export class TradeBridgeService {
   private wss: WebSocketServer;
   private connections = new Map<string, EAConnection>();
   private redis?: Redis;
-  private supabase: any;
+  private supabase: any; // Supabase client type
   private heartbeatInterval?: NodeJS.Timeout;
   
   constructor(port: number = 8080) {
@@ -244,7 +244,7 @@ export class TradeBridgeService {
         accountNumber: account.account_number,
         accountType: account.account_type,
         userId: account.user_id,
-        platform: account.platform.code,
+        platform: (account.platform as any)?.code || 'unknown',
         isAuthenticated: true
       });
 
