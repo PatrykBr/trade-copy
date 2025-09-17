@@ -694,6 +694,215 @@ export type Database = {
           }
           Relationships: []
         }
+        vps_instances: {
+          Row: {
+            cpu_usage: number | null
+            created_at: string | null
+            health_last_checked: string | null
+            health_status: string | null
+            id: string
+            ip_address: string
+            is_active: boolean | null
+            max_accounts: number | null
+            memory_usage: number | null
+            name: string
+            provider: string | null
+            region: string | null
+            status: string | null
+            updated_at: string | null
+          }
+          Insert: {
+            cpu_usage?: number | null
+            created_at?: string | null
+            health_last_checked?: string | null
+            health_status?: string | null
+            id?: string
+            ip_address: string
+            is_active?: boolean | null
+            max_accounts?: number | null
+            memory_usage?: number | null
+            name: string
+            provider?: string | null
+            region?: string | null
+            status?: string | null
+            updated_at?: string | null
+          }
+          Update: {
+            cpu_usage?: number | null
+            created_at?: string | null
+            health_last_checked?: string | null
+            health_status?: string | null
+            id?: string
+            ip_address?: string
+            is_active?: boolean | null
+            max_accounts?: number | null
+            memory_usage?: number | null
+            name?: string
+            provider?: string | null
+            region?: string | null
+            status?: string | null
+            updated_at?: string | null
+          }
+          Relationships: []
+        }
+        trade_events: {
+          Row: {
+            account_id: string
+            created_at: string | null
+            event_data: Json | null
+            event_type: string
+            id: string
+            platform_trade_id: string | null
+            processed_at: string | null
+            symbol: string | null
+            trade_id: string | null
+          }
+          Insert: {
+            account_id: string
+            created_at?: string | null
+            event_data?: Json | null
+            event_type: string
+            id?: string
+            platform_trade_id?: string | null
+            processed_at?: string | null
+            symbol?: string | null
+            trade_id?: string | null
+          }
+          Update: {
+            account_id?: string
+            created_at?: string | null
+            event_data?: Json | null
+            event_type?: string
+            id?: string
+            platform_trade_id?: string | null
+            processed_at?: string | null
+            symbol?: string | null
+            trade_id?: string | null
+          }
+          Relationships: [
+            {
+              foreignKeyName: "trade_events_account_id_fkey"
+              columns: ["account_id"]
+              isOneToOne: false
+              referencedRelation: "trading_accounts"
+              referencedColumns: ["id"]
+            },
+            {
+              foreignKeyName: "trade_events_trade_id_fkey"
+              columns: ["trade_id"]
+              isOneToOne: false
+              referencedRelation: "trades"
+              referencedColumns: ["id"]
+            },
+          ]
+        }
+        trade_execution_queue: {
+          Row: {
+            account_id: string
+            attempts: number | null
+            created_at: string | null
+            error_message: string | null
+            executed_at: string | null
+            id: string
+            lot_size: number
+            open_price: number | null
+            priority: number | null
+            status: string | null
+            stop_loss: number | null
+            symbol: string
+            take_profit: number | null
+            trade_type: string
+            updated_at: string | null
+          }
+          Insert: {
+            account_id: string
+            attempts?: number | null
+            created_at?: string | null
+            error_message?: string | null
+            executed_at?: string | null
+            id?: string
+            lot_size: number
+            open_price?: number | null
+            priority?: number | null
+            status?: string | null
+            stop_loss?: number | null
+            symbol: string
+            take_profit?: number | null
+            trade_type: string
+            updated_at?: string | null
+          }
+          Update: {
+            account_id?: string
+            attempts?: number | null
+            created_at?: string | null
+            error_message?: string | null
+            executed_at?: string | null
+            id?: string
+            lot_size?: number
+            open_price?: number | null
+            priority?: number | null
+            status?: string | null
+            stop_loss?: number | null
+            symbol?: string
+            take_profit?: number | null
+            trade_type?: string
+            updated_at?: string | null
+          }
+          Relationships: [
+            {
+              foreignKeyName: "trade_execution_queue_account_id_fkey"
+              columns: ["account_id"]
+              isOneToOne: false
+              referencedRelation: "trading_accounts"
+              referencedColumns: ["id"]
+            },
+          ]
+        }
+        connection_health_logs: {
+          Row: {
+            account_id: string | null
+            created_at: string | null
+            error_message: string | null
+            health_data: Json | null
+            id: string
+            status: string
+            vps_id: string | null
+          }
+          Insert: {
+            account_id?: string | null
+            created_at?: string | null
+            error_message?: string | null
+            health_data?: Json | null
+            id?: string
+            status: string
+            vps_id?: string | null
+          }
+          Update: {
+            account_id?: string | null
+            created_at?: string | null
+            error_message?: string | null
+            health_data?: Json | null
+            id?: string
+            status?: string
+            vps_id?: string | null
+          }
+          Relationships: [
+            {
+              foreignKeyName: "connection_health_logs_account_id_fkey"
+              columns: ["account_id"]
+              isOneToOne: false
+              referencedRelation: "trading_accounts"
+              referencedColumns: ["id"]
+            },
+            {
+              foreignKeyName: "connection_health_logs_vps_id_fkey"
+              columns: ["vps_id"]
+              isOneToOne: false
+              referencedRelation: "vps_instances"
+              referencedColumns: ["id"]
+            },
+          ]
+        }
       }
       Views: {
         [_ in never]: never
@@ -708,6 +917,19 @@ export type Database = {
             p_trade_type: string
           }
           Returns: number
+        }
+        queue_trade_copy: {
+          Args: {
+            p_account_id: string
+            p_symbol: string
+            p_trade_type: string
+            p_lot_size: number
+            p_open_price?: number
+            p_stop_loss?: number
+            p_take_profit?: number
+            p_priority?: number
+          }
+          Returns: string
         }
       }
       Enums: {
