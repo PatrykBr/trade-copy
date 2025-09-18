@@ -1,6 +1,7 @@
 "use client";
 import * as React from 'react';
 import { cn } from '@/lib/utils';
+import { safeRandomUUID } from '@/lib/uuid';
 
 interface EventItem {
   id: string;
@@ -30,7 +31,7 @@ export function ExecutionStream({ className }: { className?: string }) {
       setEvents(ev => {
         const text = SAMPLE[i % SAMPLE.length];
         const tone: EventItem['tone'] = text.includes('warn') ? 'warn' : text.includes('err') ? 'err' : 'ok';
-        const next = [...ev, { id: crypto.randomUUID(), t: Date.now(), text, tone }];
+        const next = [...ev, { id: safeRandomUUID(), t: Date.now(), text, tone }];
         return next.slice(-12);
       });
       i++;
