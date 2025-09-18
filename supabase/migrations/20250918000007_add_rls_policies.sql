@@ -8,6 +8,34 @@ ALTER TABLE subscriptions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE analytics_snapshots ENABLE ROW LEVEL SECURITY;
 ALTER TABLE protection_rules ENABLE ROW LEVEL SECURITY;
 
+-- Drop existing policies if they exist (ignore errors if they don't exist)
+DROP POLICY IF EXISTS "Users can view own profile" ON users;
+DROP POLICY IF EXISTS "Users can update own profile" ON users;
+DROP POLICY IF EXISTS "Users can insert own profile" ON users;
+DROP POLICY IF EXISTS "Users can view own trading accounts" ON trading_accounts;
+DROP POLICY IF EXISTS "Users can insert own trading accounts" ON trading_accounts;
+DROP POLICY IF EXISTS "Users can update own trading accounts" ON trading_accounts;
+DROP POLICY IF EXISTS "Users can delete own trading accounts" ON trading_accounts;
+DROP POLICY IF EXISTS "Users can view own copy mappings" ON copy_mappings;
+DROP POLICY IF EXISTS "Users can insert own copy mappings" ON copy_mappings;
+DROP POLICY IF EXISTS "Users can update own copy mappings" ON copy_mappings;
+DROP POLICY IF EXISTS "Users can delete own copy mappings" ON copy_mappings;
+DROP POLICY IF EXISTS "Users can view trades from own accounts" ON trades;
+DROP POLICY IF EXISTS "Users can insert trades to own accounts" ON trades;
+DROP POLICY IF EXISTS "Users can update trades on own accounts" ON trades;
+DROP POLICY IF EXISTS "Users can view own copied trades" ON copied_trades;
+DROP POLICY IF EXISTS "Users can insert own copied trades" ON copied_trades;
+DROP POLICY IF EXISTS "Users can update own copied trades" ON copied_trades;
+DROP POLICY IF EXISTS "Users can view own subscription" ON subscriptions;
+DROP POLICY IF EXISTS "Users can insert own subscription" ON subscriptions;
+DROP POLICY IF EXISTS "Users can update own subscription" ON subscriptions;
+DROP POLICY IF EXISTS "Users can view own analytics" ON analytics_snapshots;
+DROP POLICY IF EXISTS "System can insert analytics" ON analytics_snapshots;
+DROP POLICY IF EXISTS "Users can view own protection rules" ON protection_rules;
+DROP POLICY IF EXISTS "Users can insert own protection rules" ON protection_rules;
+DROP POLICY IF EXISTS "Users can update own protection rules" ON protection_rules;
+DROP POLICY IF EXISTS "Users can delete own protection rules" ON protection_rules;
+
 -- Users table policies
 CREATE POLICY "Users can view own profile" ON users
   FOR SELECT USING (auth.uid() = id);

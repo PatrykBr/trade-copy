@@ -59,13 +59,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const fetchProfile = async (userId: string) => {
     try {
+      console.log('🔍 Fetching profile for user:', userId)
+      
+      // Check if we have a session
+      const { data: { session } } = await supabase.auth.getSession()
+      console.log('🔍 Current session:', session ? 'exists' : 'missing')
+      console.log('🔍 Access token:', session?.access_token ? 'present' : 'missing')
+      
       const { data, error } = await supabase
         .from('users')
         .select('*')
         .eq('id', userId)
         .single()
 
-      if (error) throw error
+      if (error) {
+        console.error('❌ Profile fetch error:', error)
+        throw error
+      }
+      
+      console.log('✅ Profile fetched successfully:', data)
       setProfile(data)
     } catch (error) {
       console.error('Error fetching profile:', error)
