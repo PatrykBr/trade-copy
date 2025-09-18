@@ -102,8 +102,14 @@ export class VPSConnectionManager {
         return false;
       }
 
-      const vps = assignment.vps_instances as VPSInstance;
-      const account = assignment.trading_accounts as TradingAccount;
+      const vps = assignment.vps_instances as unknown as VPSInstance;
+      const account = assignment.trading_accounts as unknown as TradingAccount;
+
+      // Validate that we have valid objects
+      if (!vps || !account || typeof vps !== 'object' || typeof account !== 'object') {
+        console.error('Invalid VPS or account data from assignment');
+        return false;
+      }
 
       // Establish platform connection
       const connectionSuccess = await this.establishPlatformConnection(vps, account);
@@ -192,9 +198,12 @@ export class VPSConnectionManager {
   ): Promise<boolean> {
     try {
       // VPS connection configuration
-      const vpsConfig = vps.connection_config as VPSConnectionConfig;
+      const vpsConfig = vps.connection_config as unknown as VPSConnectionConfig;
       
-      // Simulate MT4/MT5 connection process
+      // Validate required fields
+      if (!vpsConfig || typeof vpsConfig !== 'object' || !vpsConfig.host || !vpsConfig.port) {
+        throw new Error('Invalid VPS connection configuration');
+      }
       // In production, this would:
       // 1. SSH/RDP to VPS
       // 2. Start MT4/MT5 terminal with credentials
