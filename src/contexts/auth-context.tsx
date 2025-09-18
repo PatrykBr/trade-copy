@@ -24,39 +24,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true)
   const supabase = createClient()
 
-  useEffect(() => {
-    // Get initial session
-    const getSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession()
-      setUser(session?.user ?? null)
-      
-      if (session?.user) {
-        await fetchProfile(session.user.id)
-      }
-      
-      setLoading(false)
-    }
-
-    getSession()
-
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        setUser(session?.user ?? null)
-        
-        if (session?.user) {
-          await fetchProfile(session.user.id)
-        } else {
-          setProfile(null)
-        }
-        
-        setLoading(false)
-      }
-    )
-
-    return () => subscription.unsubscribe()
-  }, [])
-
   const fetchProfile = async (userId: string) => {
     try {
       console.log('🔍 Fetching profile for user:', userId)
@@ -83,6 +50,48 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       console.error('Error fetching profile:', error)
     }
   }
+
+  useEffect(() => {
+    // Get initial session
+    const getSession = async () => {
+      console.log('🔍 Getting initial session...')
+      const { data: { session }, error } = await supabase.auth.getSession()
+      console.log('🔍 Initial session result:', { session: session ? 'exists' : 'null', error })
+      
+      setUser(session?.user ?? null)
+      
+      if (session?.user) {
+        console.log('🔍 Session user found:', session.user.id)
+        await fetchProfile(session.user.id)
+      } else {
+        console.log('❌ No session user found')
+      }
+      
+      setLoading(false)
+    }
+
+    getSession()
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        console.log('🔍 Auth state change:', event, session ? 'session exists' : 'no session')
+        setUser(session?.user ?? null)
+        
+        if (session?.user) {
+          console.log('🔍 Auth change - fetching profile for:', session.user.id)
+          await fetchProfile(session.user.id)
+        } else {
+          console.log('🔍 Auth change - clearing profile')
+          setProfile(null)
+        }
+        
+        setLoading(false)
+      }
+    )
+
+    return () => subscription.unsubscribe()
+  }, [fetchProfile, supabase.auth])
 
   const signUp: AuthContextType['signUp'] = async (email, password, fullName) => {
     const { data, error } = await supabase.auth.signUp({
